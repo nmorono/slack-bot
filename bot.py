@@ -11,14 +11,17 @@ config = dotenv_values(".env")
 
 def start(update, context):
     update.message.reply_text('Hola, bienvenido, que deseas hacer?\n\nUsa /qr para generar un codigo qr')
+
 def qr_command_handler(update, context):
     update.message.reply_text('Envíame un texto para generarte un código qr por favor.')
     return INPUT_TEXT
+
 def generate_qr(text):
     filename = text + '.jpg'
     img = qrcode.make(text)
     img.save(filename)
     return filename
+
 def send_qr(filename,chat):
     chat.send_action(
         action=ChatAction.UPLOAD_PHOTO, 
@@ -29,7 +32,6 @@ def send_qr(filename,chat):
     )
     os.unlink(filename)
 
-
 def input_text(update, context): 
     text = update.message.text
     filename = generate_qr(text)
@@ -37,7 +39,6 @@ def input_text(update, context):
     send_qr(filename, chat) 
     return ConversationHandler.END
  
-
 if __name__ == '__main__':
     updater=Updater(token=config['MY_TOKEN'], use_context=True)
     dp=updater.dispatcher
