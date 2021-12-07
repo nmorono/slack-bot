@@ -9,3 +9,8 @@ La idea es probar la funcionalidad de telegram bot y eso va a implicar aprender/
 - [telegram_bot](https://core.telegram.org/bots)
 - [telegram_bot_api](https://core.telegram.org/api)
 
+### Notas Varias
+archivo requirements creado con pipreqs (pip3 install pipreqs)
+```pipreqs /path/to/project```
+
+
