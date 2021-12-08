@@ -1,8 +1,9 @@
+from typing import Text
 import qrcode
 import os
 from dotenv import dotenv_values
-from telegram.ext import Updater,CommandHandler,ConversationHandler,MessageHandler,Filters
-from telegram import ChatAction
+from telegram.ext import Updater,CommandHandler,ConversationHandler,CallbackQueryHandler,MessageHandler,Filters
+from telegram import ChatAction, InlineKeyboardMarkup, InlineKeyboardButton
 
 INPUT_TEXT  = 0  
 
@@ -10,11 +11,29 @@ config = dotenv_values(".env")
 
 
 def start(update, context):
-    update.message.reply_text('Hola, bienvenido, que deseas hacer?\n\nUsa /qr para generar un codigo qr')
+    update.message.reply_text(
+        text='Hola, bienvenido, que deseas hacer?\n\nUsa /qr para generar un codigo qr',
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(text='Generar QR', callback_data='qr')],
+            [InlineKeyboardButton(text='Sobre el autor', url='https://github.com/nmorono')],
+            [InlineKeyboardButton(text='Twitter', url='https://twitter.com')]
+        ])
+        )
 
 def qr_command_handler(update, context):
     update.message.reply_text('Envíame un texto para generarte un código qr por favor.')
     return INPUT_TEXT
+
+def qr_callback_handler(update, context):
+    query = update.callback_query
+    query.answer()
+
+    query.edit_message_text(
+        text='Envíame un texto para generarte un código qr por favor.'
+    )
+    return INPUT_TEXT
+ 
+
 
 def generate_qr(text):
     filename = text + '.jpg'
@@ -45,7 +64,8 @@ if __name__ == '__main__':
     dp.add_handler(CommandHandler('start',start))
     dp.add_handler(ConversationHandler(
         entry_points=[
-            CommandHandler('qr',qr_command_handler)
+            CommandHandler('qr',qr_command_handler),
+            CallbackQueryHandler(pattern='qr',callback=qr_callback_handler)            
         ],
         states={
             INPUT_TEXT: [MessageHandler(Filters.text, input_text)] 
@@ -55,4 +75,4 @@ if __name__ == '__main__':
 
     updater.start_polling()
     updater.idle() 
-   
+    
