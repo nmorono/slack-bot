@@ -1,0 +1,5 @@
+python-dotenv==0.19.2
+requests==2.26.0
+slack-sdk==3.13.0
+slack_bolt>=1.6.1
+certifi
